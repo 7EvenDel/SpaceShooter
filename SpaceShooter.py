@@ -11,6 +11,7 @@ from kivy.graphics import Rectangle
 from kivy.uix.button import Button
 
 
+
 class Player(Image):
     score = NumericProperty(0)
     velocity_x = NumericProperty(0)
@@ -65,9 +66,33 @@ class SpaceGame(Widget):
         self.move_bullets()
         self.check_collisions()
         self.update_score_label()
+        self.create_buttons()
+
+    def create_buttons(self):
+        self.left_button = Button(text="Left", size_hint=(None, None), size=(100, 75), pos=(100, 10))
+        self.left_button.bind(on_press=self.on_left_button_press)
+        self.add_widget(self.left_button)
+
+        self.shoot_button = Button(text="Shoot", size_hint=(None, None), size=(100, 75), pos=(200, 10))
+        self.shoot_button.bind(on_press=self.on_shoot_button_press)
+        self.add_widget(self.shoot_button) 
+
+        self.right_button = Button(text="Right", size_hint=(None, None), size=(100, 75), pos=(300, 10))
+        self.right_button.bind(on_press=self.on_right_button_press)
+        self.add_widget(self.right_button)
+   
 
     def update_score_label(self):
         self.score_label.text = f"Score: {self.player.score}"
+            
+    def on_left_button_press(self, instance):
+        self.player.velocity_x = -self.player_speed
+
+    def on_right_button_press(self, instance):
+        self.player.velocity_x = self.player_speed
+
+    def on_shoot_button_press(self, instance):
+        self.fire_bullet()
 
     def on_key_down(self, keyboard, keycode, text, modifiers):
         if keycode[1] == 'left':
@@ -166,7 +191,8 @@ class SpaceGame(Widget):
         self.add_widget(self.player)
         self.player.score = 0  
         self.add_widget(self.score_label)  
-        self.update_score_label()  
+        self.update_score_label()
+
 
 class SpaceApp(App):
     def build(self):
